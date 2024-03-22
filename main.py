@@ -31,7 +31,7 @@ if __name__ == '__main__':
     config = EasyDict(config)
     config.TRAIN.lr = args.learning_rate
     parser_TPG = argparse.ArgumentParser()
-    Logger.init('logs', 'LEMMA', 'train')
+    Logger.init('logs', 'SGENet', 'train')
     Logger.enable_file()
     main(config, args, parser)
 

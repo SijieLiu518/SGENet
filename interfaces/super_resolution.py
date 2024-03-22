@@ -282,10 +282,9 @@ class TextSR(base.TextBase):
 
             images_sr = ret_dict["images_sr"]
 
-            # == 首先解析输入图像为文本识别器的输入形式 =======
             aster_dict_lr = aster[0]["data_in_fn"](images_lr[:, :3, :, :])
             aster_dict_hr = aster[0]["data_in_fn"](images_hr[:, :3, :, :])
-            # ==== 之后是将解析后的图像用于文本识别  这里只对LR和HR进行识别====
+            
             if self.args.test_model == "MORAN":
                 # LR
                 aster_output_lr = aster[0]["model"](
@@ -308,7 +307,7 @@ class TextSR(base.TextBase):
             else:
                 aster_output_lr = aster[0]["model"](aster_dict_lr)
                 aster_output_hr = aster[0]["model"](aster_dict_hr)
-            # ============对SR进行图像解析和通过文本识别器 ==============
+            
             if type(images_sr) == list:
                 predict_result_sr = []
                 image = images_sr[0]
@@ -376,7 +375,7 @@ class TextSR(base.TextBase):
                         debug=True
                     )
                 else:
-                    aster_output_sr = aster[0]["model"](aster_dict_sr) # 对超分结果进行识别
+                    aster_output_sr = aster[0]["model"](aster_dict_sr)
                 # outputs_sr = aster_output_sr.permute(1, 0, 2).contiguous()
                 if self.args.test_model == "CRNN":
                     predict_result_sr = aster[0]["string_process"](aster_output_sr)
@@ -408,7 +407,7 @@ class TextSR(base.TextBase):
 
                 metric_dict["LPIPS_VGG_LR"].append(lpips_vgg(img_lr[:, :3].cpu(), images_hr[:, :3].cpu()).data.numpy()[0].reshape(-1)[0])
 
-            if self.args.test_model == "CRNN":#之前是只对SR的识别结果进行的处理，这里将HR和LR同样进行处理
+            if self.args.test_model == "CRNN":
                 predict_result_lr = aster[0]["string_process"](aster_output_lr)
                 predict_result_hr = aster[0]["string_process"](aster_output_hr)
             elif self.args.test_model == "ASTER":
@@ -460,7 +459,6 @@ class TextSR(base.TextBase):
             torch.cuda.empty_cache()
             
 
-        # 已经把整个测试集跑完
         psnr_avg = sum(metric_dict['psnr']) / (len(metric_dict['psnr']) + 1e-10)
         ssim_avg = sum(metric_dict['ssim']) / (len(metric_dict['psnr']) + 1e-10)
 
@@ -485,7 +483,7 @@ class TextSR(base.TextBase):
 
         logging.info('save display images')
 
-        accuracy = round(counters[0] / sum_images, 4)# loader已经跑完了，把全部的测试集图片和全部正确个数相除
+        accuracy = round(counters[0] / sum_images, 4)
 
         accuracy_lr = round(n_correct_lr / sum_images, 4)
         accuracy_hr = round(n_correct_hr / sum_images, 4)

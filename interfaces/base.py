@@ -19,7 +19,7 @@ from loss import text_focus_loss
 from model.parseq.parseq import PARSeq
 from model.MATRN import matrn
 from utils.labelmaps import get_vocabulary, labels2strs
-from LEMMA.model.lemma import LEMMA
+from model.sgenet import SGENet
 sys.path.append('../')
 from utils import ssim_psnr, utils_moran, utils_crnn
 import dataset.dataset as dataset
@@ -119,9 +119,9 @@ class TextBase(object):
 
         resume = self.resume
 
-        model = LEMMA(scale_factor=self.scale_factor, width=cfg.width, height=cfg.height,
+        model = SGENet(scale_factor=self.scale_factor, width=cfg.width, height=cfg.height,
                       STN=self.args.STN, mask=self.mask, srb_nums=self.args.srb,
-                      cfg=self.config)
+                      cfg=self.config, parser=self.parser)
         image_crit = text_focus_loss.TextFocusLoss(self.config.TRAIN)
 
         # channel_size = 4
@@ -141,7 +141,6 @@ class TextBase(object):
         model = model.to("cuda")
         flops, params = profile(model, inputs=(dummy_input,))
         print(f"FLOPs: {flops / 1e9:.2f} G")
-        # exit(0)
         
         model = model.to(self.device)
         # logging.info(model)
@@ -158,6 +157,7 @@ class TextBase(object):
         # vision_pos_num = sum(p.numel() for p in model.guidanceGen.vision_pos.parameters())
         # LEM_nums = attn_conv_num + IN_num + DWC_num + vision_pos_num
         # logging.info('LEM_nums: {}'.format(LEM_nums))
+        print(model)
         text_proj_num = sum(p.numel() for p in model.guidanceGen.text_proj.parameters())
         text_Encoder_num = sum(p.numel() for p in model.guidanceGen.text_Encoder.parameters())
         text_decoder_num = sum(p.numel() for p in model.guidanceGen.text_decoder.parameters())
@@ -347,7 +347,7 @@ class TextBase(object):
 
 
     def parse_abinet_data(self, imgs_input):
-        return imgs_input # 对输入图像做预处理。这里的abinet不需要做任何操作
+        return imgs_input
 
     def parse_parseq_data(self, imgs_input):
         return imgs_input
