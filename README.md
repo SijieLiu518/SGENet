@@ -12,10 +12,6 @@ Authors: *LeoWu TomyEnrique, Xiangcheng Du, Kangliang Liu, Han Yuan, Zhao Zhou a
 
 ![test-samples](https://arxiv.org/html/2403.13330v1/x2.png)
 
-## Pre-trained Model
-
-Coming soon...
-
 ## Prepare Datasets
 
 TextZoom dataset contains 17,367 LR-HR pairs for training and 4,373 pairs for testing.
