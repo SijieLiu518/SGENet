@@ -1,6 +1,8 @@
 *.pth
 ckpt
 dataset
+# model
+PaddleOCR2Pytorch
 __pycache__
 __MACOSX
 demo
@@ -8,5 +10,6 @@ logs
 environment.yaml
 requirements.txt
 LICENSE.txt
+.gitignore
 workdir
 README1.md
