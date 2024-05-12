@@ -1,0 +1,12 @@
+*.pth
+ckpt
+dataset
+__pycache__
+__MACOSX
+demo
+logs
+environment.yaml
+requirements.txt
+LICENSE.txt
+workdir
+README1.md
